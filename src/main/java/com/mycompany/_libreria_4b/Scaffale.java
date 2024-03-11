@@ -207,12 +207,25 @@ public class Scaffale
         {
             for(int j=0;j<ripiani[i].getNumMaxVolumi();j++)
             {
-                lib=this.getLibro(i, j);
-                if(lib!=null)
+                try {
+                    lib=this.getLibro(i, j);
+                   
+                        if (lib.getAutore().equalsIgnoreCase(autoreDaCercare))
+                            contaLibriAutore++;   
+                    
+                    } 
+                catch (EccezioneRipianoNonValido ex) 
                 {
-                    if (lib.getAutore().equalsIgnoreCase(autoreDaCercare))
-                        contaLibriAutore++;
-                }   
+                    //non succederà mai
+                } 
+                catch (EccezionePosizioneNonValida ex) 
+                {
+                    //non succederà mai
+                } 
+                catch (EccezionePosizioneVuota ex) 
+                {
+                    //non fare nulla.
+                }
             }
         }
         
@@ -228,15 +241,28 @@ public class Scaffale
         {
             for(int j=0;j<ripiani[i].getNumMaxVolumi();j++)
             {
-                lib=this.getLibro(i, j);
-                if(lib!=null)
+                try {
+                    lib=this.getLibro(i, j);
+                    
+                        if (lib.getAutore().equalsIgnoreCase(autoreDaCercare))
+                        {
+                            elencoTitoliAutore[contaLibriAutore]=lib.getTitolo();
+                            contaLibriAutore++;
+                        }
+                    
+                    } 
+                catch (EccezioneRipianoNonValido ex) 
+                {   
+                    //non succederà mai
+                } 
+                catch (EccezionePosizioneNonValida ex)
                 {
-                    if (lib.getAutore().equalsIgnoreCase(autoreDaCercare))
-                    {
-                        elencoTitoliAutore[contaLibriAutore]=lib.getTitolo();
-                        contaLibriAutore++;
-                    }
-                }   
+                    //non succederà mai
+                }
+                catch (EccezionePosizioneVuota ex)
+                {
+                    //non fare nulla
+                }
             }
         }
         return elencoTitoliAutore;
@@ -257,11 +283,25 @@ public class Scaffale
         {
             for(int j=0;j<getNumMaxLibri(i);j++)
             {
-                lib=getLibro(i, j);
-                if (lib!=null)
+                try {
+                    lib=getLibro(i, j);
+                    if (lib!=null)
+                    {
+                        elencoLibriOrdinato[c]=lib;
+                        c++;
+                    }
+                } 
+                catch (EccezioneRipianoNonValido ex) 
                 {
-                    elencoLibriOrdinato[c]=lib;
-                    c++;
+                    //non succederà mai
+                } 
+                catch (EccezionePosizioneNonValida ex) 
+                {
+                    //non succederà mai
+                } 
+                catch (EccezionePosizioneVuota ex) 
+                {
+                 //non fare nulla   
                 }
             }
         }
