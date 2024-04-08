@@ -8,22 +8,25 @@ import eccezioni.EccezionePosizioneNonValida;
 import eccezioni.EccezionePosizioneOccupata;
 import eccezioni.EccezionePosizioneVuota;
 import eccezioni.EccezioneRipianoNonValido;
+import eccezioni.FileException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import utilita.ConsoleInput;
 import utilita.Menu;
+import utilita.TextFile;
 
 /**
  *
  * @author gian
  */
-public class App {
+public class App 
+{
 
     public static void main(String[] args) 
     {
-        int numeroVociMenu=7;
+        int numeroVociMenu=9;
         String[] vociMenu=new String[numeroVociMenu];
         int voceMenuScelta;
         Menu menu;
@@ -31,10 +34,12 @@ public class App {
         ConsoleInput tastiera=new ConsoleInput();
         String titolo,autore;
         int numeroPagine,ripiano, posizione;
-        int esito;
+        
         Libro lib;
         Libro[] elencoLibriOrdinatiAlfabeticamente;
         String [] elencoTitoliAutore;
+        String nomeFileCSV="volumi.csv";
+        
         
         vociMenu[0]="0 -->\tEsci";
         vociMenu[1]="1 -->\tVisualizza tutti i volumi dello scaffale";
@@ -43,7 +48,8 @@ public class App {
         vociMenu[4]="4 -->\tElimina volume (ripiano,posizione)";
         vociMenu[5]="5 -->\tMostra titoli di uno specifico autore";
         vociMenu[6]="6 -->\tMostra elenco dei volumi presenti ordinato alfabeticamente per titolo";
-        
+        vociMenu[7]="7 -->\tesporta volumi in formato CSV";
+        vociMenu[8]="8 -->\tImporta volumi da file CSV";
         menu=new Menu(vociMenu);
         
         
@@ -280,9 +286,55 @@ public class App {
                         System.out.println(elencoLibriOrdinatiAlfabeticamente[i].toString());
                     }
                     break;
+             
+                case 7:
+                {
+                    try 
+                    {
+                        TextFile f1=new TextFile(nomeFileCSV,'W'); //apro il file in scrittura
+                        String datiVolume;
+                        for(int i=0; i<s1.getNumRipiani();i++)
+                        {
+                            for(int j=0;j<s1.getNumMaxLibri(i);j++)
+                            {
+                                try {
+                                    lib=s1.getLibro(i, j);
+                                    datiVolume=i+";"+j+";"+lib.getTitolo()+";"+lib.getAutore()+";"+lib.getNumeroPagine();
+                                    f1.toFile(datiVolume);
+                                    
+                             
+                                } 
+                                catch (EccezioneRipianoNonValido | EccezionePosizioneNonValida ex) 
+                                {
+                                    //non succederà mai
+                                } 
+ 
+                                catch (EccezionePosizioneVuota ex)
+                                {
+                                    //non far nulla
+                                } 
+                                catch (FileException ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                            }
+                        }
+                        f1.closeFile(); 
+                        System.out.println("Esportazione avvenuta correttamente ");
+                    } 
+                    catch (IOException ex)
+                    {
+                        System.out.println("Impossibile accedere al file");
+                    }
+                }
                     
+                    break;
+
             }
         }while(voceMenuScelta!=0);
+        
+        
+            
         
     }
 }
